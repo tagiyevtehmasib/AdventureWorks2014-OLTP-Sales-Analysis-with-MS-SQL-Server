@@ -1,21 +1,23 @@
 
 
 SELECT * FROM Sales.SalesOrderDetail
+SELECT * FROM Sales.SalesOrderHeader
 SELECT * FROM Sales.SalesTerritory
 
---Unique Count of Custmers
-SELECT COUNT(DISTINCT CustomerID)
+
+--Unique total count of custmers
+SELECT COUNT(DISTINCT CustomerID) AS total_unique_customer
 FROM Sales.SalesOrderHeader
+WHERE CustomerID IS NOT NULL
 
 
 --The total_revenue give each of the custmer
-SELECT so.CustomerID AS S,
-SUM(so.TotalDue) AS D
+SELECT YEAR(so.OrderDate) AS unique_years,
+so.CustomerID AS unique_customers,
+SUM(so.TotalDue) AS total_revenue
 FROM Sales.SalesOrderHeader so
-WHERE YEAR(so.OrderDate) = 2011 
-GROUP BY so.CustomerID
-ORDER BY so.CustomerID
-
+GROUP BY YEAR(so.OrderDate), so.CustomerID
+ORDER BY unique_years
 
 
 --In each of year total_revenue
@@ -55,6 +57,40 @@ m.Last_Big_Customer,
 m.Total_Revenue
 FROM Max_Revenue m
 WHERE m.rn = 1
+
+
+--The highest revenue generating customer each year. WITH DOUBLE SUBQUERY.
+SELECT rw.year_row,
+rw.customer_row,
+rw.revenue_row
+FROM 
+(SELECT uyc.unique_years AS year_row,
+uyc.unique_customers AS customer_row,
+uyc.total_revenue AS revenue_row,
+ROW_NUMBER() OVER(PARTITION BY uyc.unique_years ORDER BY uyc.total_revenue DESC) AS rank_revenue
+FROM 
+(SELECT YEAR(so.OrderDate) AS unique_years,
+so.CustomerID AS unique_customers,
+SUM(so.TotalDue) AS total_revenue
+FROM Sales.SalesOrderHeader so
+GROUP BY YEAR(so.OrderDate), so.CustomerID
+) AS uyc
+) AS rw
+WHERE rank_revenue = 1
+
+
+--Show unique_order and count of orderqty and unique_sublinetotal
+SELECT sr.unique_order,
+sr.orderqty,
+sr.linetotal
+FROM (
+SELECT SalesOrderID AS unique_order,
+OrderQty AS orderqty,
+LineTotal AS linetotal,
+ROW_NUMBER() OVER(PARTITION BY SalesOrderID ORDER BY LineTotal DESC) AS line_rank
+FROM Sales.SalesOrderDetail
+) AS sr
+WHERE sr.line_rank = 1
 
 
 
