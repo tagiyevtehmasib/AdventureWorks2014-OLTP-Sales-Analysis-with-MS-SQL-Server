@@ -93,6 +93,33 @@ FROM Sales.SalesOrderDetail
 WHERE sr.line_rank = 1
 
 
+SELECT * FROM Purchasing.Vendor 
+SELECT * FROM Purchasing.ProductVendor WHERE BusinessEntityID = 1514
+
+SELECT BusinessEntityID,
+COUNT(ProductID)
+FROM Purchasing.ProductVendor
+GROUP BY BusinessEntityID
+
+
+SELECT ProductID,
+SUM(LineTotal)
+FROM Sales.SalesOrderDetail WHERE ProductID = 777
+GROUP BY ProductID
+
+SELECT 
+(ssd.UnitPrice - ppd.UnitPrice)
+FROM Sales.SalesOrderDetail ssd
+JOIN Purchasing.PurchaseOrderDetail ppd
+ON ssd.ProductID = ppd.ProductID
+
+SELECT  ssd.ProductID,
+ssd.UnitPrice,
+ppd.ProductID,
+ppd.UnitPrice
+FROM Sales.SalesOrderDetail ssd
+JOIN Purchasing.PurchaseOrderDetail ppd
+ON ssd.ProductID = ppd.ProductID
 
 
 
