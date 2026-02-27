@@ -113,13 +113,34 @@ FROM Sales.SalesOrderDetail ssd
 JOIN Purchasing.PurchaseOrderDetail ppd
 ON ssd.ProductID = ppd.ProductID
 
-SELECT  ssd.ProductID,
-ssd.UnitPrice,
-ppd.ProductID,
-ppd.UnitPrice
-FROM Sales.SalesOrderDetail ssd
-JOIN Purchasing.PurchaseOrderDetail ppd
-ON ssd.ProductID = ppd.ProductID
+WITH TotalSalesRevenue AS 
+(
+	SELECT ProductID AS revenue_productID,
+	SUM(OrderQty * UnitPrice) AS total_revenue
+	FROM Sales.SalesOrderDetail
+	GROUP BY ProductID
+),
+TotalPurchaseCost AS
+(
+	SELECT ProductID AS total_costid,
+	SUM(OrderQty * UnitPrice) AS total_cost
+	FROM Purchasing.PurchaseOrderDetail
+	GROUP BY ProductID
+)
+SELECT SUM(tr.total_revenue - tc.total_cost)
+FROM TotalPurchaseCost tc
+RIGHT JOIN TotalSalesRevenue tr
+ON tc.total_costid = tr.revenue_productID
+
+
+
+
+
+
+
+
+
+
 
 
 
