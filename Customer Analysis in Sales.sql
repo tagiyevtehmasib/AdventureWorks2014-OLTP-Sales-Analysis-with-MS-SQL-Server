@@ -132,6 +132,14 @@ FROM TotalPurchaseCost tc
 RIGHT JOIN TotalSalesRevenue tr
 ON tc.total_costid = tr.revenue_productID
 
+-- Calculate the total quantity of each of the product how many sold.
+SELECT SUM(OrderQty) FROM Sales.SalesOrderDetail
+
+--Average Order Value (AOV)
+SELECT SUM(sh.TotalDue) / COUNT(sd.SalesOrderID) 
+FROM Sales.SalesOrderHeader sh
+JOIN Sales.SalesOrderDetail sd
+ON sd.SalesOrderID = sh.SalesOrderID
 
 
 
