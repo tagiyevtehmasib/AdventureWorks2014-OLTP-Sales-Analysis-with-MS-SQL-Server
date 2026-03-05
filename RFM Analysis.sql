@@ -30,6 +30,8 @@ SELECT * FROM ScoringDate
 ORDER BY max_order ASC
 
 
+-------------------------------------------------------------------------------------------
+
 
 --=> Frequency Analysis
 WITH Frequency AS
@@ -48,6 +50,8 @@ FrequencyScoring AS
 )
 SELECT * FROM FrequencyScoring
 
+
+-------------------------------------------------------------------------------------------
 
 
 --=> Monetary Analysis
@@ -68,7 +72,7 @@ MonetaryScoring AS
 SELECT * FROM MonetaryScoring
 
 
-
+-------------------------------------------------------------------------------------------
 
 
 --Now, I will combine all three analyses I did into one CTE and combine their RFM values ​​for each unique ID using CONCAT_WS.
