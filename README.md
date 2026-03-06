@@ -1,1 +1,1 @@
-# AdventureWorks2014-OLTP-Sales-Analysis-with-MS-SQL-Server
+# AdventureWorks2014-OLTP RFM, KPI, Churn and Cohort Analyses
