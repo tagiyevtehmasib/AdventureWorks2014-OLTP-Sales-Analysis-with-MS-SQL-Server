@@ -200,7 +200,7 @@ ON f.funique_customer = m.m_customerID
 
 --But in this section, I evaluated the result with 3 main parameters using the keywords "between and".
 
-
+CREATE VIEW V2RFM2 AS
 SELECT m_customerID,
 (R1 + F1 + M1) as total_rfm,
 CONCAT_WS('', R1, F1, M1) AS RFM1,
@@ -234,15 +234,29 @@ FROM RFM1
 --FROM RFM1
 
 ------------------------------------------------------------------------------------------------------------
+--Count of customer in every segment.
+SELECT Dereceler,
+COUNT(m_customerID) AS total_customer_count
+FROM V2RFM2
+GROUP BY Dereceler
 
+------------------------------------------------------------------------------------------------------------
+--Total revenue of in every segment.
+SELECT v.Dereceler,
+SUM(s.TotalDue) AS totalsum_forevery_segment
+FROM V2RFM2 v
+JOIN Sales.SalesOrderHeader s
+ON v.m_customerID = s.CustomerID
+GROUP BY v.Dereceler
 
-
-
-SELECT CustomerID,
-SUM(TotalDue)
-FROM Sales.SalesOrderHeader
-GROUP BY CustomerID
-
+------------------------------------------------------------------------------------------------------------
+--Average total revenue per customer..
+SELECT v.m_customerID,
+AVG(s.TotalDue)
+FROM V2RFM2 v
+JOIN Sales.SalesOrderHeader s
+ON v.m_customerID = s.CustomerID
+GROUP BY v.m_customerID
 
 
 
